@@ -18,7 +18,8 @@ class Method(AMQPObject):
 
     NAME: str
 
-    synchronous: bool
+    @property
+    def synchronous(self) -> bool: ...
 
     def get_properties(self) -> Properties: ...
     def get_body(self) -> bytes: ...

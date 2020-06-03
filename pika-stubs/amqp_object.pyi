@@ -1,18 +1,29 @@
-from typing import Any
+from __future__ import annotations
+
+from typing import Optional
+
 
 class AMQPObject:
-    NAME: str = ...
-    INDEX: Any = ...
-    def __eq__(self, other: Any) -> Any: ...
+
+    NAME: str
+    INDEX: Optional[int]
+
 
 class Class(AMQPObject):
-    NAME: str = ...
+
+    NAME: str
+
 
 class Method(AMQPObject):
-    NAME: str = ...
-    synchronous: bool = ...
-    def get_properties(self): ...
-    def get_body(self): ...
+
+    NAME: str
+
+    synchronous: bool
+
+    def get_properties(self) -> Properties: ...
+    def get_body(self) -> bytes: ...
+
 
 class Properties(AMQPObject):
-    NAME: str = ...
+
+    NAME: str

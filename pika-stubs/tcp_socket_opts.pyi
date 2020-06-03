@@ -1,0 +1,6 @@
+from typing import Any
+
+LOGGER: Any
+
+def socket_requires_keepalive(tcp_options: Any): ...
+def set_sock_opts(tcp_options: Any, sock: Any) -> None: ...

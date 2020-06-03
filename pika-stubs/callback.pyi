@@ -1,4 +1,4 @@
-from typing import Any, Callable, Mapping, Optional, Union
+from typing import Any, Callable, Mapping, Optional, Tuple, Union
 
 from . import amqp_object
 
@@ -30,12 +30,12 @@ class CallbackManager:
         one_shot: bool,
         only_caller: Optional[_Caller],
         arguments: Optional[Mapping[str, Any]],
-    ): ...
+    ) -> Tuple[_Prefix, Any]: ...
 
     def clear(self) -> None: ...
-    def cleanup(self, prefix: _Prefix): ...
+    def cleanup(self, prefix: _Prefix) -> bool: ...
 
-    def pending(self, prefix: _Prefix, key: _Key): ...
+    def pending(self, prefix: _Prefix, key: _Key) -> Optional[int]: ...
 
     def process(
         self,
@@ -44,7 +44,7 @@ class CallbackManager:
         caller: _Caller,
         *args: Any,
         **keywords: Any,
-    ): ...
+    ) -> bool: ...
 
     def remove(
         self,

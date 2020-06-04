@@ -5,10 +5,10 @@ from . import amqp_object, spec
 
 class Frame(amqp_object.AMQPObject):
 
-    NAME: str
+    NAME: str = ...
 
-    frame_type: int
-    channel_number: int
+    frame_type: int = ...
+    channel_number: int = ...
 
     def __init__(self, frame_type: int, channel_number: int) -> None: ...
     def marshal(self) -> bytes: ...
@@ -16,9 +16,9 @@ class Frame(amqp_object.AMQPObject):
 
 class Method(Frame):
 
-    NAME: str
+    NAME: str = ...
 
-    method: amqp_object.Method
+    method: amqp_object.Method = ...
 
     def __init__(self, channel_number: int, method: amqp_object.Method) -> None: ...
     def marshal(self) -> bytes: ...
@@ -26,10 +26,10 @@ class Method(Frame):
 
 class Header(Frame):
 
-    NAME: str
+    NAME: str = ...
 
-    body_size: Any
-    properties: spec.BasicProperties
+    body_size: Any = ...
+    properties: spec.BasicProperties = ...
 
     def __init__(
         self,
@@ -42,9 +42,9 @@ class Header(Frame):
 
 class Body(Frame):
 
-    NAME: str
+    NAME: str = ...
 
-    fragment: bytes
+    fragment: bytes = ...
 
     def __init__(self, channel_number: int, fragment: bytes) -> None: ...
     def marshal(self) -> bytes: ...
@@ -52,7 +52,7 @@ class Body(Frame):
 
 class Heartbeat(Frame):
 
-    NAME: str
+    NAME: str = ...
 
     def __init__(self) -> None: ...
     def marshal(self) -> bytes: ...
@@ -60,19 +60,19 @@ class Heartbeat(Frame):
 
 class ProtocolHeader(amqp_object.AMQPObject):
 
-    NAME: str
+    NAME: str = ...
 
-    frame_type: int
+    frame_type: int = ...
 
-    major: int
-    minor: int
-    revision: int
+    major: int = ...
+    minor: int = ...
+    revision: int = ...
 
     def __init__(
         self,
-        major: Optional[int],
-        minor: Optional[int],
-        revision: Optional[int],
+        major: Optional[int] = ...,
+        minor: Optional[int] = ...,
+        revision: Optional[int] = ...,
     ) -> None: ...
     def marshal(self) -> bytes: ...
 

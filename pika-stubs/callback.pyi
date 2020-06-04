@@ -15,21 +15,21 @@ def check_for_prefix_and_key(function: _Callback) -> _Callback: ...
 
 class CallbackManager:
 
-    CALLS: str
-    ARGUMENTS: str
-    DUPLICATE_WARNING: str
-    CALLBACK: str
-    ONE_SHOT: str
-    ONLY_CALLER: str
+    CALLS: str = ...
+    ARGUMENTS: str = ...
+    DUPLICATE_WARNING: str = ...
+    CALLBACK: str = ...
+    ONE_SHOT: str = ...
+    ONLY_CALLER: str = ...
 
     def add(
         self,
         prefix: _Prefix,
         key: _Key,
         callback: _Callback,
-        one_shot: bool,
-        only_caller: Optional[_Caller],
-        arguments: Optional[Mapping[str, Any]],
+        one_shot: bool = ...,
+        only_caller: Optional[_Caller] = ...,
+        arguments: Optional[Mapping[str, Any]] = ...,
     ) -> Tuple[_Prefix, Any]: ...
 
     def clear(self) -> None: ...
@@ -50,7 +50,7 @@ class CallbackManager:
         self,
         prefix: _Prefix,
         key: _Key,
-        callback_value: Optional[_Callback],
-        arguments: Optional[Mapping[str, Any]],
+        callback_value: Optional[_Callback] = ...,
+        arguments: Optional[Mapping[str, Any]] = ...,
     ) -> bool: ...
     def remove_all(self, prefix: _Prefix, key: _Key) -> None: ...

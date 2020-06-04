@@ -5,18 +5,18 @@ from typing import Optional
 
 class AMQPObject:
 
-    NAME: str
-    INDEX: Optional[int]
+    NAME: str = ...
+    INDEX: Optional[int] = ...
 
 
 class Class(AMQPObject):
 
-    NAME: str
+    NAME: str = ...
 
 
 class Method(AMQPObject):
 
-    NAME: str
+    NAME: str = ...
 
     @property
     def synchronous(self) -> bool: ...
@@ -27,4 +27,4 @@ class Method(AMQPObject):
 
 class Properties(AMQPObject):
 
-    NAME: str
+    NAME: str = ...

@@ -107,7 +107,7 @@ class ConsumerCancelled(AMQPChannelError):
 
 class UnroutableError(AMQPChannelError):
 
-    messages: Sequence[blocking_connection.ReturnedMessage]
+    messages: Sequence[blocking_connection.ReturnedMessage] = ...
 
     def __init__(
         self,
@@ -117,7 +117,7 @@ class UnroutableError(AMQPChannelError):
 
 class NackError(AMQPChannelError):
 
-    messages: Sequence[blocking_connection.ReturnedMessage]
+    messages: Sequence[blocking_connection.ReturnedMessage] = ...
 
     def __init__(
         self,

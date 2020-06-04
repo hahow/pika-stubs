@@ -1,17 +1,17 @@
-from typing import Any, Optional, Tuple, Union
+from typing import Optional, Tuple, Union
 
 from . import spec
 
 
 class PlainCredentials:
 
-    TYPE: str
+    TYPE: str = ...
 
-    username: str
-    password: str
-    erase_on_connect: bool
+    username: str = ...
+    password: str = ...
+    erase_on_connect: bool = ...
 
-    def __init__(self, username: str, password: str, erase_on_connect: bool) -> None: ...
+    def __init__(self, username: str, password: str, erase_on_connect: bool = ...) -> None: ...
 
     def response_for(
         self,
@@ -23,9 +23,9 @@ class PlainCredentials:
 
 class ExternalCredentials:
 
-    TYPE: str
+    TYPE: str = ...
 
-    erase_on_connect: bool
+    erase_on_connect: bool = ...
 
     def response_for(
         self,

@@ -25,27 +25,27 @@ _OnOpenChannelCallback = Callable[[channel_.Channel], None]
 
 class Parameters:
 
-    DEFAULT_USERNAME: str
-    DEFAULT_PASSWORD: str
+    DEFAULT_USERNAME: str = ...
+    DEFAULT_PASSWORD: str = ...
 
-    DEFAULT_BLOCKED_CONNECTION_TIMEOUT: Optional[numbers.Real]
-    DEFAULT_CHANNEL_MAX: numbers.Integral
-    DEFAULT_CLIENT_PROPERTIES: Optional[Mapping[str, Any]]
-    DEFAULT_CREDENTIALS: credentials_.VALID_TYPES
-    DEFAULT_CONNECTION_ATTEMPTS: numbers.Integral
-    DEFAULT_FRAME_MAX: numbers.Integral
-    DEFAULT_HEARTBEAT_TIMEOUT: Optional[Union[numbers.Integral, _OnHeartbeatTimeoutCallback]]
-    DEFAULT_HOST: str
-    DEFAULT_LOCALE: str
-    DEFAULT_PORT: int
-    DEFAULT_RETRY_DELAY: numbers.Real
-    DEFAULT_SOCKET_TIMEOUT: Optional[numbers.Real]
-    DEFAULT_STACK_TIMEOUT: Optional[numbers.Real]
-    DEFAULT_SSL: bool
-    DEFAULT_SSL_OPTIONS: Optional[SSLOptions]
-    DEFAULT_SSL_PORT: int
-    DEFAULT_VIRTUAL_HOST: str
-    DEFAULT_TCP_OPTIONS: Optional[Mapping[str, Any]]
+    DEFAULT_BLOCKED_CONNECTION_TIMEOUT: Optional[numbers.Real] = ...
+    DEFAULT_CHANNEL_MAX: numbers.Integral = ...
+    DEFAULT_CLIENT_PROPERTIES: Optional[Mapping[str, Any]] = ...
+    DEFAULT_CREDENTIALS: credentials_.VALID_TYPES = ...
+    DEFAULT_CONNECTION_ATTEMPTS: numbers.Integral = ...
+    DEFAULT_FRAME_MAX: numbers.Integral = ...
+    DEFAULT_HEARTBEAT_TIMEOUT: Optional[Union[numbers.Integral, _OnHeartbeatTimeoutCallback]] = ...
+    DEFAULT_HOST: str = ...
+    DEFAULT_LOCALE: str = ...
+    DEFAULT_PORT: int = ...
+    DEFAULT_RETRY_DELAY: numbers.Real = ...
+    DEFAULT_SOCKET_TIMEOUT: Optional[numbers.Real] = ...
+    DEFAULT_STACK_TIMEOUT: Optional[numbers.Real] = ...
+    DEFAULT_SSL: bool = ...
+    DEFAULT_SSL_OPTIONS: Optional[SSLOptions] = ...
+    DEFAULT_SSL_PORT: int = ...
+    DEFAULT_VIRTUAL_HOST: str = ...
+    DEFAULT_TCP_OPTIONS: Optional[Mapping[str, Any]] = ...
 
     @property
     def blocked_connection_timeout(self) -> numbers.Real: ...
@@ -125,22 +125,22 @@ class ConnectionParameters(Parameters):
 
     def __init__(
         self,
-        host: Union[str, _DEFAULT],
-        port: Union[int, _DEFAULT],
-        virtual_host: Union[str, _DEFAULT],
-        credentials: Union[credentials_.VALID_TYPES, _DEFAULT],
-        channel_max: Union[int, _DEFAULT],
-        frame_max: Union[int, _DEFAULT],
-        heartbeat: Union[int, _OnHeartbeatTimeoutCallback, None, _DEFAULT],
-        ssl_options: Union[SSLOptions, _DEFAULT],
-        connection_attempts: Union[int, _DEFAULT],
-        retry_delay: Union[numbers.Real, _DEFAULT],
-        socket_timeout: Union[numbers.Real, _DEFAULT],
-        stack_timeout: Union[numbers.Real, _DEFAULT],
-        locale: Union[str, _DEFAULT],
-        blocked_connection_timeout: Union[numbers.Real, None, _DEFAULT],
-        client_properties: Union[Mapping[str, Any], None, _DEFAULT],
-        tcp_options: Union[Mapping[str, Any], None, _DEFAULT],
+        host: Union[str, _DEFAULT] = ...,
+        port: Union[int, _DEFAULT] = ...,
+        virtual_host: Union[str, _DEFAULT] = ...,
+        credentials: Union[credentials_.VALID_TYPES, _DEFAULT] = ...,
+        channel_max: Union[int, _DEFAULT] = ...,
+        frame_max: Union[int, _DEFAULT] = ...,
+        heartbeat: Union[int, _OnHeartbeatTimeoutCallback, None, _DEFAULT] = ...,
+        ssl_options: Union[SSLOptions, _DEFAULT] = ...,
+        connection_attempts: Union[int, _DEFAULT] = ...,
+        retry_delay: Union[numbers.Real, _DEFAULT] = ...,
+        socket_timeout: Union[numbers.Real, _DEFAULT] = ...,
+        stack_timeout: Union[numbers.Real, _DEFAULT] = ...,
+        locale: Union[str, _DEFAULT] = ...,
+        blocked_connection_timeout: Union[numbers.Real, None, _DEFAULT] = ...,
+        client_properties: Union[Mapping[str, Any], None, _DEFAULT] = ...,
+        tcp_options: Union[Mapping[str, Any], None, _DEFAULT] = ...,
         **kwargs: Any,
     ): ...
 
@@ -152,40 +152,40 @@ class URLParameters(Parameters):
 
 class SSLOptions:
 
-    context: ssl.SSLContext
-    server_hostname: Optional[str]
+    context: ssl.SSLContext = ...
+    server_hostname: Optional[str] = ...
 
-    def __init__(self, context: ssl.SSLContext, server_hostname: Optional[str]): ...
+    def __init__(self, context: ssl.SSLContext, server_hostname: Optional[str] = ...): ...
 
 
 class Connection(abc.ABC):
 
-    ON_CONNECTION_CLOSED: str
-    ON_CONNECTION_ERROR: str
-    ON_CONNECTION_OPEN_OK: str
+    ON_CONNECTION_CLOSED: str = ...
+    ON_CONNECTION_ERROR: str = ...
+    ON_CONNECTION_OPEN_OK: str = ...
 
-    CONNECTION_CLOSED: int
-    CONNECTION_INIT: int
-    CONNECTION_PROTOCOL: int
-    CONNECTION_START: int
-    CONNECTION_TUNE: int
-    CONNECTION_OPEN: int
-    CONNECTION_CLOSING: int
+    CONNECTION_CLOSED: int = ...
+    CONNECTION_INIT: int = ...
+    CONNECTION_PROTOCOL: int = ...
+    CONNECTION_START: int = ...
+    CONNECTION_TUNE: int = ...
+    CONNECTION_OPEN: int = ...
+    CONNECTION_CLOSING: int = ...
 
-    connection_state: Any
-    params: Any
-    callbacks: callback.CallbackManager
-    server_capabilities: Any
-    server_properties: Any
-    known_hosts: Any
+    connection_state: Any = ...
+    params: Any = ...
+    callbacks: callback.CallbackManager = ...
+    server_capabilities: Any = ...
+    server_properties: Any = ...
+    known_hosts: Any = ...
 
     def __init__(
         self,
-        parameters: Optional[Parameters],
-        on_open_callback: Optional[_OnOpenCallback],
-        on_open_error_callback: Optional[_OnOpenErrorCallback],
-        on_close_callback: Optional[_OnCloseCallback],
-        internal_connection_workflow: bool,
+        parameters: Optional[Parameters] = ...,
+        on_open_callback: Optional[_OnOpenCallback] = ...,
+        on_open_error_callback: Optional[_OnOpenErrorCallback] = ...,
+        on_close_callback: Optional[_OnCloseCallback] = ...,
+        internal_connection_workflow: bool = ...,
     ) -> None: ...
 
     def add_on_close_callback(self, callback: _OnCloseCallback) -> None: ...
@@ -205,16 +205,16 @@ class Connection(abc.ABC):
     def add_on_open_error_callback(
         self,
         callback: _OnOpenErrorCallback,
-        remove_default: bool,
+        remove_default: bool = ...,
     ) -> None: ...
 
     def channel(
         self,
-        channel_number: Optional[int],
-        on_open_callback: Optional[_OnOpenChannelCallback],
+        channel_number: Optional[int] = ...,
+        on_open_callback: Optional[_OnOpenChannelCallback] = ...,
     ) -> channel_.Channel: ...
 
-    def close(self, reply_code: int, reply_text: str) -> None: ...
+    def close(self, reply_code: int = ..., reply_text: str = ...) -> None: ...
 
     @property
     def is_closed(self) -> bool: ...

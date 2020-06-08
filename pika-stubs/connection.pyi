@@ -1,6 +1,5 @@
 from __future__ import annotations
 
-import abc
 import numbers
 import ssl
 from typing import Any, Callable, Dict, Mapping, Optional, Union
@@ -8,6 +7,7 @@ from typing import Any, Callable, Dict, Mapping, Optional, Union
 from . import (
     callback,
     channel as channel_,
+    compat,
     credentials as credentials_,
     spec,
 )
@@ -158,7 +158,7 @@ class SSLOptions:
     def __init__(self, context: ssl.SSLContext, server_hostname: Optional[str] = ...): ...
 
 
-class Connection(abc.ABC):
+class Connection(compat.AbstractBase):
 
     ON_CONNECTION_CLOSED: str = ...
     ON_CONNECTION_ERROR: str = ...

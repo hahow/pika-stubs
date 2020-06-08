@@ -1,42 +1,40 @@
-import abc
-from pika.adapters.utils.nbio_interface import AbstractIOReference as AbstractIOReference, AbstractStreamTransport as AbstractStreamTransport
-from typing import Any, Optional
+from __future__ import annotations
 
-def check_callback_arg(callback: Any, name: Any) -> None: ...
-def check_fd_arg(fd: Any) -> None: ...
+import ssl
+from socket import socket
+from typing import Any, Callable, Optional, Tuple, Union
+
+from . import nbio_interface
+
 
 class SocketConnectionMixin:
-    def connect_socket(self, sock: Any, resolved_addr: Any, on_done: Any): ...
+
+    def connect_socket(
+        self,
+        sock: socket,
+        resolved_addr: Any,
+        on_done: Callable[[Optional[BaseException]], None],
+    ) -> nbio_interface.AbstractIOReference: ...
+
 
 class StreamingConnectionMixin:
-    def create_streaming_connection(self, protocol_factory: Any, sock: Any, on_done: Any, ssl_context: Optional[Any] = ..., server_hostname: Optional[Any] = ...): ...
 
-class _AsyncServiceAsyncHandle(AbstractIOReference):
-    def __init__(self, subject: Any) -> None: ...
-    def cancel(self): ...
-
-class _AsyncSocketConnector:
-    def __init__(self, nbio: Any, sock: Any, resolved_addr: Any, on_done: Any) -> None: ...
-    def start(self): ...
-    def cancel(self): ...
-
-class _AsyncStreamConnector:
-    def __init__(self, nbio: Any, protocol_factory: Any, sock: Any, ssl_context: Any, server_hostname: Any, on_done: Any) -> None: ...
-    def start(self): ...
-    def cancel(self): ...
-
-class _AsyncTransportBase(AbstractStreamTransport, metaclass=abc.ABCMeta):
-    class RxEndOfFile(OSError):
-        def __init__(self) -> None: ...
-    def __init__(self, sock: Any, protocol: Any, nbio: Any) -> None: ...
-    def abort(self) -> None: ...
-    def get_protocol(self): ...
-    def get_write_buffer_size(self): ...
-
-class _AsyncPlaintextTransport(_AsyncTransportBase):
-    def __init__(self, sock: Any, protocol: Any, nbio: Any) -> None: ...
-    def write(self, data: Any) -> None: ...
-
-class _AsyncSSLTransport(_AsyncTransportBase):
-    def __init__(self, sock: Any, protocol: Any, nbio: Any) -> None: ...
-    def write(self, data: Any) -> None: ...
+    def create_streaming_connection(
+        self,
+        protocol_factory: Callable[[], nbio_interface.AbstractStreamProtocol],
+        sock: socket,
+        on_done: Callable[
+            [
+                Union[
+                    BaseException,
+                    Tuple[
+                        nbio_interface.AbstractStreamTransport,
+                        nbio_interface.AbstractStreamProtocol,
+                    ],
+                ]
+            ],
+            None,
+        ],
+        ssl_context: Optional[ssl.SSLContext],
+        server_hostname: Optional[str],
+    ) -> nbio_interface.AbstractIOReference: ...

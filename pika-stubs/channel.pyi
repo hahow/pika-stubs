@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from typing import Any, Callable, List, Mapping, Optional, Tuple, Union
+from typing import Any, Callable, List, Mapping, Optional, Sequence, Tuple, Union
 
 from . import (
     callback,
@@ -61,7 +61,7 @@ class Channel:
     def add_callback(
         self,
         callback: Callable[..., Any],
-        replies: Any,
+        replies: Sequence[Any],
         one_shot: bool = ...,
     ) -> None: ...
 

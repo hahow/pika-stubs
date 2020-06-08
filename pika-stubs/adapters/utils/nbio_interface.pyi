@@ -1,61 +1,118 @@
+from __future__ import annotations
+
 import abc
-import pika.compat
-from typing import Any, Optional
+import ssl
+from socket import AddressFamily, SocketKind, socket
+from typing import Any, AnyStr, Callable, IO, List, Optional, Text, Tuple, Union
 
-class AbstractIOServices(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def get_native_ioloop(self) -> Any: ...
-    @abc.abstractmethod
-    def close(self) -> Any: ...
-    @abc.abstractmethod
-    def run(self) -> Any: ...
-    @abc.abstractmethod
-    def stop(self) -> Any: ...
-    @abc.abstractmethod
-    def add_callback_threadsafe(self, callback: Any) -> Any: ...
-    @abc.abstractmethod
-    def call_later(self, delay: Any, callback: Any) -> Any: ...
-    @abc.abstractmethod
-    def getaddrinfo(self, host: Any, port: Any, on_done: Any, family: int = ..., socktype: int = ..., proto: int = ..., flags: int = ...) -> Any: ...
-    @abc.abstractmethod
-    def connect_socket(self, sock: Any, resolved_addr: Any, on_done: Any) -> Any: ...
-    @abc.abstractmethod
-    def create_streaming_connection(self, protocol_factory: Any, sock: Any, on_done: Any, ssl_context: Optional[Any] = ..., server_hostname: Optional[Any] = ...) -> Any: ...
+from ... import compat
 
-class AbstractFileDescriptorServices(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def set_reader(self, fd: Any, on_readable: Any) -> Any: ...
-    @abc.abstractmethod
-    def remove_reader(self, fd: Any) -> Any: ...
-    @abc.abstractmethod
-    def set_writer(self, fd: Any, on_writable: Any) -> Any: ...
-    @abc.abstractmethod
-    def remove_writer(self, fd: Any) -> Any: ...
 
-class AbstractTimerReference(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
-    @abc.abstractmethod
-    def cancel(self) -> Any: ...
+class AbstractIOServices(compat.AbstractBase):
 
-class AbstractIOReference(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def cancel(self) -> Any: ...
+    def get_native_ioloop(self) -> object: ...
+    @abc.abstractmethod
+    def close(self) -> None: ...
+    @abc.abstractmethod
+    def run(self) -> None: ...
+    @abc.abstractmethod
+    def stop(self) -> None: ...
+    @abc.abstractmethod
+    def add_callback_threadsafe(self, callback: Callable[[], None]) -> None: ...
+    @abc.abstractmethod
+    def call_later(self, delay: float, callback: Callable[[], None]) -> AbstractTimerReference: ...
 
-class AbstractStreamProtocol(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
     @abc.abstractmethod
-    def connection_made(self, transport: Any) -> Any: ...
+    def getaddrinfo(
+        self,
+        host: Optional[Union[bytearray, bytes, Text]],
+        port: Union[str, int, None],
+        on_done: Callable[
+            [
+                Union[
+                    BaseException,
+                    List[Tuple[AddressFamily, SocketKind, int, str, Tuple[Any, ...]]],
+                ]
+            ],
+            None,
+        ],
+        family: int,
+        socktype: int,
+        proto: int,
+        flags: int,
+    ) -> AbstractIOReference: ...
+
     @abc.abstractmethod
-    def connection_lost(self, error: Any) -> Any: ...
+    def connect_socket(
+        self,
+        sock: socket,
+        resolved_addr: Any,
+        on_done: Callable[[Optional[BaseException]], None],
+    ) -> AbstractIOReference: ...
+
+    @abc.abstractmethod
+    def create_streaming_connection(
+        self,
+        protocol_factory: Callable[[], AbstractStreamProtocol],
+        sock: socket,
+        on_done: Callable[
+            [
+                Union[
+                    BaseException,
+                    Tuple[AbstractStreamTransport, AbstractStreamProtocol],
+                ]
+            ],
+            None,
+        ],
+        ssl_context: Optional[ssl.SSLContext],
+        server_hostname: Optional[str],
+    ) -> AbstractIOReference: ...
+
+
+class AbstractFileDescriptorServices(compat.AbstractBase):
+
+    @abc.abstractmethod
+    def set_reader(self, fd: IO[AnyStr], on_readable: Callable[[], None]) -> None: ...
+    @abc.abstractmethod
+    def remove_reader(self, fd: IO[AnyStr]) -> bool: ...
+    @abc.abstractmethod
+    def set_writer(self, fd: IO[AnyStr], on_writable: Callable[[], None]) -> None: ...
+    @abc.abstractmethod
+    def remove_writer(self, fd: IO[AnyStr]) -> bool: ...
+
+
+class AbstractTimerReference(compat.AbstractBase):
+
+    @abc.abstractmethod
+    def cancel(self) -> None: ...
+
+
+class AbstractIOReference(compat.AbstractBase):
+
+    @abc.abstractmethod
+    def cancel(self) -> bool: ...
+
+
+class AbstractStreamProtocol(compat.AbstractBase):
+
+    @abc.abstractmethod
+    def connection_made(self, transport: AbstractStreamTransport) -> None: ...
+    @abc.abstractmethod
+    def connection_lost(self, error: Optional[BaseException]) -> None: ...
     @abc.abstractmethod
     def eof_received(self) -> Any: ...
     @abc.abstractmethod
-    def data_received(self, data: Any) -> Any: ...
+    def data_received(self, data: bytes) -> None: ...
 
-class AbstractStreamTransport(pika.compat.AbstractBase, metaclass=abc.ABCMeta):
+
+class AbstractStreamTransport(compat.AbstractBase):
+
     @abc.abstractmethod
-    def abort(self) -> Any: ...
+    def abort(self) -> None: ...
     @abc.abstractmethod
-    def get_protocol(self) -> Any: ...
+    def get_protocol(self) -> AbstractStreamProtocol: ...
     @abc.abstractmethod
-    def write(self, data: Any) -> Any: ...
+    def write(self, data: bytes) -> None: ...
     @abc.abstractmethod
-    def get_write_buffer_size(self) -> Any: ...
+    def get_write_buffer_size(self) -> int: ...

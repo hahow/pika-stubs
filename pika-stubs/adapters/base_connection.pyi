@@ -1,23 +1,46 @@
 import abc
-from pika import connection as connection
-from pika.adapters.utils import connection_workflow as connection_workflow, nbio_interface as nbio_interface
-from typing import Any, Optional
+from typing import Callable, Generic, Optional, Sequence, TypeVar, Union
 
-LOGGER: Any
+from .. import connection
+from .utils import connection_workflow, nbio_interface
 
-class BaseConnection(connection.Connection, metaclass=abc.ABCMeta):
-    def __init__(self, parameters: Any, on_open_callback: Any, on_open_error_callback: Any, on_close_callback: Any, nbio: Any, internal_connection_workflow: Any) -> None: ...
+_OnCloseCallback = Callable[['BaseConnection', Exception], None]
+_OnOpenCallback = Callable[['BaseConnection'], None]
+_OnOpenErrorCallback = Callable[['BaseConnection', Union[str, Exception]], None]
+
+_IOLoop = TypeVar('_IOLoop')
+
+
+class BaseConnection(Generic[_IOLoop], connection.Connection):
+
+    def __init__(
+        self,
+        parameters: Optional[connection.Parameters],
+        on_open_callback: Optional[_OnOpenCallback],
+        on_open_error_callback: Optional[_OnOpenErrorCallback],
+        on_close_callback: Optional[_OnCloseCallback],
+        nbio: nbio_interface.AbstractIOServices,
+        internal_connection_workflow: bool,
+    ) -> None: ...
+
     @classmethod
     @abc.abstractmethod
-    def create_connection(cls, connection_configs: Any, on_done: Any, custom_ioloop: Optional[Any] = ..., workflow: Optional[Any] = ...) -> Any: ...
-    @property
-    def ioloop(self): ...
+    def create_connection(
+        cls,
+        connection_configs: Sequence[connection.Parameters],
+        on_done: Callable[
+            [
+                Union[
+                    connection.Connection,
+                    connection_workflow.AMQPConnectionWorkflowFailed,
+                    connection_workflow.AMQPConnectionWorkflowAborted,
+                ],
+            ],
+            None
+        ],
+        custom_ioloop: Optional[_IOLoop] = ...,
+        workflow: Optional[connection_workflow.AbstractAMQPConnectionWorkflow] = ...,
+    ) -> connection_workflow.AbstractAMQPConnectionWorkflow: ...
 
-class _StreamingProtocolShim(nbio_interface.AbstractStreamProtocol):
-    connection_made: Any = ...
-    connection_lost: Any = ...
-    eof_received: Any = ...
-    data_received: Any = ...
-    conn: Any = ...
-    def __init__(self, conn: Any) -> None: ...
-    def __getattr__(self, attr: Any): ...
+    @property
+    def ioloop(self) -> _IOLoop: ...

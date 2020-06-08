@@ -1,32 +1,41 @@
-from pika.adapters import base_connection as base_connection
-from pika.adapters.utils import io_services_utils as io_services_utils, nbio_interface as nbio_interface
-from typing import Any, Optional
+import asyncio
+from typing import Callable, Optional, Sequence, Union
 
-LOGGER: Any
+from .. import connection
+from . import base_connection
+from .utils import connection_workflow
 
-class AsyncioConnection(base_connection.BaseConnection):
-    def __init__(self, parameters: Optional[Any] = ..., on_open_callback: Optional[Any] = ..., on_open_error_callback: Optional[Any] = ..., on_close_callback: Optional[Any] = ..., custom_ioloop: Optional[Any] = ..., internal_connection_workflow: bool = ...) -> None: ...
+_OnCloseCallback = Callable[['AsyncioConnection', Exception], None]
+_OnOpenCallback = Callable[['AsyncioConnection'], None]
+_OnOpenErrorCallback = Callable[['AsyncioConnection', Union[str, Exception]], None]
+
+
+class AsyncioConnection(base_connection.BaseConnection[asyncio.AbstractEventLoop]):
+
+    def __init__(
+        self,
+        parameters: Optional[connection.Parameters],
+        on_open_callback: Optional[_OnOpenCallback],
+        on_open_error_callback: Optional[_OnOpenErrorCallback],
+        on_close_callback: Optional[_OnCloseCallback],
+        custom_ioloop: Optional[asyncio.AbstractEventLoop] = ...,
+        internal_connection_workflow: bool = ...,
+    ) -> None: ...
+
     @classmethod
-    def create_connection(cls, connection_configs: Any, on_done: Any, custom_ioloop: Optional[Any] = ..., workflow: Optional[Any] = ...): ...
-
-class _AsyncioIOServicesAdapter(io_services_utils.SocketConnectionMixin, io_services_utils.StreamingConnectionMixin, nbio_interface.AbstractIOServices, nbio_interface.AbstractFileDescriptorServices):
-    def __init__(self, loop: Optional[Any] = ...) -> None: ...
-    def get_native_ioloop(self): ...
-    def close(self) -> None: ...
-    def run(self) -> None: ...
-    def stop(self) -> None: ...
-    def add_callback_threadsafe(self, callback: Any) -> None: ...
-    def call_later(self, delay: Any, callback: Any): ...
-    def getaddrinfo(self, host: Any, port: Any, on_done: Any, family: int = ..., socktype: int = ..., proto: int = ..., flags: int = ...): ...
-    def set_reader(self, fd: Any, on_readable: Any) -> None: ...
-    def remove_reader(self, fd: Any): ...
-    def set_writer(self, fd: Any, on_writable: Any) -> None: ...
-    def remove_writer(self, fd: Any): ...
-
-class _TimerHandle(nbio_interface.AbstractTimerReference):
-    def __init__(self, handle: Any) -> None: ...
-    def cancel(self) -> None: ...
-
-class _AsyncioIOReference(nbio_interface.AbstractIOReference):
-    def __init__(self, future: Any, on_done: Any) -> None: ...
-    def cancel(self): ...
+    def create_connection(
+        cls,
+        connection_configs: Sequence[connection.Parameters],
+        on_done: Callable[
+            [
+                Union[
+                    connection.Connection,
+                    connection_workflow.AMQPConnectionWorkflowFailed,
+                    connection_workflow.AMQPConnectionWorkflowAborted,
+                ],
+            ],
+            None
+        ],
+        custom_ioloop: Optional[asyncio.AbstractEventLoop] = ...,
+        workflow: Optional[connection_workflow.AbstractAMQPConnectionWorkflow] = ...,
+    ) -> connection_workflow.AbstractAMQPConnectionWorkflow: ...

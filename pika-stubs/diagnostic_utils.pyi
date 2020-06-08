@@ -1,3 +1,0 @@
-from typing import Any
-
-def create_log_exception_decorator(logger: Any): ...

@@ -173,7 +173,7 @@ class BlockingChannel:
         exchange: str,
         routing_key: str,
         body: bytes,
-        properties: Optional[Mapping[str, Any]] = ...,
+        properties: Optional[spec.BasicProperties] = ...,
         mandatory: bool = ...,
     ) -> None: ...
 

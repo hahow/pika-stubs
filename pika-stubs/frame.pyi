@@ -1,6 +1,8 @@
-from typing import Any, Optional, Tuple
+from typing import Any, Generic, Optional, Tuple, TypeVar
 
 from . import amqp_object, spec
+
+_Method = TypeVar('_Method', bound=amqp_object.Method)
 
 
 class Frame(amqp_object.AMQPObject):
@@ -14,13 +16,13 @@ class Frame(amqp_object.AMQPObject):
     def marshal(self) -> bytes: ...
 
 
-class Method(Frame):
+class Method(Frame, Generic[_Method]):
 
     NAME: str = ...
 
-    method: amqp_object.Method = ...
+    method: _Method = ...
 
-    def __init__(self, channel_number: int, method: amqp_object.Method) -> None: ...
+    def __init__(self, channel_number: int, method: _Method) -> None: ...
     def marshal(self) -> bytes: ...
 
 

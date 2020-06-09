@@ -9,6 +9,7 @@ from . import (
     channel as channel_,
     compat,
     credentials as credentials_,
+    frame,
     spec,
 )
 
@@ -16,8 +17,20 @@ PRODUCT: str
 
 _OnHeartbeatTimeoutCallback = Callable[['Connection', numbers.Integral], int]
 _OnCloseCallback = Callable[['Connection', Exception], None]
-_OnConnectionBlockedCallback = Callable[['Connection', spec.Connection.Blocked], None]
-_OnConnectionUnblockedCallback = Callable[['Connection', spec.Connection.Unblocked], None]
+_OnConnectionBlockedCallback = Callable[
+    [
+        'Connection',
+        frame.Method[spec.Connection.Blocked]
+    ],
+    None,
+]
+_OnConnectionUnblockedCallback = Callable[
+    [
+        'Connection',
+        frame.Method[spec.Connection.Unblocked],
+    ],
+    None,
+]
 _OnOpenCallback = Callable[['Connection'], None]
 _OnOpenErrorCallback = Callable[['Connection', Union[str, Exception]], None]
 _OnOpenChannelCallback = Callable[[channel_.Channel], None]

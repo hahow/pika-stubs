@@ -11,26 +11,26 @@ from . import (
 
 MAX_CHANNELS: int
 
-_OnAckNackCallback = Callable[[Union[spec.Basic.Ack, spec.Basic.Nack]], None]
-_OnConfirmDeliveryCallback = Callable[[spec.Confirm.SelectOk], None]
-_OnBasicConsumeCallback = Callable[[spec.Basic.ConsumeOk], None]
+_OnAckNackCallback = Callable[[frame.Method[Union[spec.Basic.Ack, spec.Basic.Nack]]], None]
+_OnConfirmDeliveryCallback = Callable[[frame.Method[spec.Confirm.SelectOk]], None]
+_OnBasicConsumeCallback = Callable[[frame.Method[spec.Basic.ConsumeOk]], None]
 _OnBasicGetCallback = Callable[['Channel', spec.Basic.GetOk, spec.BasicProperties, bytes], None]
-_OnBasicRecoverCallback = Callable[[spec.Basic.RecoverOk], None]
-_OnBasicQosCallback = Callable[[spec.Basic.QosOk], None]
-_OnBasicCancelCallback = Callable[[spec.Basic.CancelOk], None]
+_OnBasicRecoverCallback = Callable[[frame.Method[spec.Basic.RecoverOk]], None]
+_OnBasicQosCallback = Callable[[frame.Method[spec.Basic.QosOk]], None]
+_OnBasicCancelCallback = Callable[[frame.Method[spec.Basic.CancelOk]], None]
 _OnCloseCallback = Callable[['Channel', Exception], None]
-_OnExchangeBindCallback = Callable[[spec.Exchange.BindOk], None]
-_OnExchangeDeclareCallback = Callable[[spec.Exchange.DeclareOk], None]
-_OnExchangeDeleteCallback = Callable[[spec.Exchange.DeleteOk], None]
-_OnExchangeUnbindCallback = Callable[[spec.Exchange.UnbindOk], None]
+_OnExchangeBindCallback = Callable[[frame.Method[spec.Exchange.BindOk]], None]
+_OnExchangeDeclareCallback = Callable[[frame.Method[spec.Exchange.DeclareOk]], None]
+_OnExchangeDeleteCallback = Callable[[frame.Method[spec.Exchange.DeleteOk]], None]
+_OnExchangeUnbindCallback = Callable[[frame.Method[spec.Exchange.UnbindOk]], None]
 _OnFlowCallback = Callable[[bool], None]
 _OnMessageCallback = Callable[['Channel', spec.Basic.Deliver, spec.BasicProperties, bytes], None]
 _OnOpenCallback = Callable[['Channel'], None]
-_OnQueueBindCallback = Callable[[spec.Queue.BindOk], None]
-_OnQueueDeclareCallback = Callable[[spec.Queue.DeclareOk], None]
-_OnQueueDeleteCallback = Callable[[spec.Queue.DeleteOk], None]
-_OnQueuePurgeCallback = Callable[[spec.Queue.PurgeOk], None]
-_OnQueueUnbindCallback = Callable[[spec.Queue.UnbindOk], None]
+_OnQueueBindCallback = Callable[[frame.Method[spec.Queue.BindOk]], None]
+_OnQueueDeclareCallback = Callable[[frame.Method[spec.Queue.DeclareOk]], None]
+_OnQueueDeleteCallback = Callable[[frame.Method[spec.Queue.DeleteOk]], None]
+_OnQueuePurgeCallback = Callable[[frame.Method[spec.Queue.PurgeOk]], None]
+_OnQueueUnbindCallback = Callable[[frame.Method[spec.Queue.UnbindOk]], None]
 _OnReturnCallback = Callable[['Channel', spec.Basic.Return, spec.BasicProperties, bytes], None]
 _OnTxCommitCallback = Callable[[spec.Tx.CommitOk], None]
 _OnTxRollbackCallback = Callable[[spec.Tx.RollbackOk], None]
@@ -79,7 +79,7 @@ class Channel:
     def basic_cancel(
         self,
         consumer_tag: str = ...,
-        callback: _OnBasicCancelCallback = ...,
+        callback: Optional[_OnBasicCancelCallback] = ...,
     ) -> None: ...
 
     def basic_consume(

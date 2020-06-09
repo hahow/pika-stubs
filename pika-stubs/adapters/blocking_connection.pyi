@@ -3,7 +3,7 @@ from __future__ import annotations
 import types
 from typing import Any, Callable, List, Mapping, Optional, Tuple, Type
 
-from .. import channel, connection, spec
+from .. import channel, connection, frame, spec
 
 
 class BlockingConnection:
@@ -198,13 +198,13 @@ class BlockingChannel:
         auto_delete: bool = ...,
         internal: bool = ...,
         arguments: Optional[Mapping[str, Any]] = ...,
-    ) -> spec.Exchange.DeclareOk: ...
+    ) -> frame.Method[spec.Exchange.DeclareOk]: ...
 
     def exchange_delete(
         self,
         exchange: Optional[str] = ...,
         if_unused: bool = ...,
-    ) -> spec.Exchange.DeleteOk: ...
+    ) -> frame.Method[spec.Exchange.DeleteOk]: ...
 
     def exchange_bind(
         self,
@@ -212,7 +212,7 @@ class BlockingChannel:
         source: str,
         routing_key: str = ...,
         arguments: Optional[Mapping[str, Any]] = ...,
-    ) -> spec.Exchange.BindOk: ...
+    ) -> frame.Method[spec.Exchange.BindOk]: ...
 
     def exchange_unbind(
         self,
@@ -220,7 +220,7 @@ class BlockingChannel:
         source: Optional[str] = ...,
         routing_key: str = ...,
         arguments: Optional[Mapping[str, Any]] = ...,
-    ) -> spec.Exchange.UnbindOk: ...
+    ) -> frame.Method[spec.Exchange.UnbindOk]: ...
 
     def queue_declare(
         self,
@@ -230,16 +230,16 @@ class BlockingChannel:
         exclusive: bool = ...,
         auto_delete: bool = ...,
         arguments: Optional[spec.Queue.DeclareOk] = ...,
-    ) -> spec.Queue.DeclareOk: ...
+    ) -> frame.Method[spec.Queue.DeclareOk]: ...
 
     def queue_delete(
         self,
         queue: str,
         if_unused: bool = ...,
         if_empty: bool = ...,
-    ) -> spec.Queue.DeleteOk: ...
+    ) -> frame.Method[spec.Queue.DeleteOk]: ...
 
-    def queue_purge(self, queue: str) -> spec.Queue.PurgeOk: ...
+    def queue_purge(self, queue: str) -> frame.Method[spec.Queue.PurgeOk]: ...
 
     def queue_bind(
         self,
@@ -247,7 +247,7 @@ class BlockingChannel:
         exchange: str,
         routing_key: Optional[str] = ...,
         arguments: Optional[Mapping[str, Any]] = ...,
-    ) -> spec.Queue.BindOk: ...
+    ) -> frame.Method[spec.Queue.BindOk]: ...
 
     def queue_unbind(
         self,
@@ -255,8 +255,8 @@ class BlockingChannel:
         exchange: Optional[str] = ...,
         routing_key: Optional[str] = ...,
         arguments: Optional[Mapping[str, Any]] = ...,
-    ) -> spec.Queue.UnbindOk: ...
+    ) -> frame.Method[spec.Queue.UnbindOk]: ...
 
-    def tx_select(self) -> spec.Tx.SelectOk: ...
-    def tx_commit(self) -> spec.Tx.CommitOk: ...
-    def tx_rollback(self) -> spec.Tx.CommitOk: ...
+    def tx_select(self) -> frame.Method[spec.Tx.SelectOk]: ...
+    def tx_commit(self) -> frame.Method[spec.Tx.CommitOk]: ...
+    def tx_rollback(self) -> frame.Method[spec.Tx.CommitOk]: ...

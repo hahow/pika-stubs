@@ -1,0 +1,2 @@
+recursive-include pika-stubs *.pyi
+include LICENSE
